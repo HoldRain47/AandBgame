@@ -152,7 +152,7 @@
         <h1>새 질문 만들기</h1>
         <p class="subtitle">A와 B 중 하나를 선택하는 질문을 만들어보세요</p>
 
-        <form th:action="@{/questions/new}" method="post" th:object="${question}">
+        <form th:action="@{/questions/new}" method="post" th:object="${question}" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="title">질문 제목 *</label>
                 <input id="title" type="text" th:field="*{title}" placeholder="예: 여름 휴가지로 어디가 더 좋을까요?" required
@@ -166,10 +166,14 @@
                 <div class="option-box">
                     <span class="option-label">선택지 A</span>
                     <input id="optionA" type="text" th:field="*{optionA}" placeholder="예: 바다" required maxlength="200">
+	                <label style="margin-top:10px; display:block; font-size:0.9em; color:#555;">이미지 A 업로드</label>
+	                <input type="file" name="imageA" accept="image/*">
                 </div>
                 <div class="option-box">
                     <span class="option-label">선택지 B</span>
                     <input id="optionB" type="text" th:field="*{optionB}" placeholder="예: 산" required maxlength="200">
+	                <label style="margin-top:10px; display:block; font-size:0.9em; color:#555;">이미지 B 업로드</label>
+	                <input type="file" name="imageB" accept="image/*">
                 </div>
             </div>
 
