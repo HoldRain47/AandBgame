@@ -15,33 +15,21 @@ import java.util.UUID;
 @Service
 public class ImageService {
 
-    private final String uploadDir = "uploads";
+    // 프로젝트 루트 기준 절대 경로
+    private final Path uploadPath = Paths.get(System.getProperty("user.dir"), "uploads");
 
     public String saveImage(MultipartFile image) throws IOException {
         if (image == null || image.isEmpty()) return null;
 
-        File uploadDir = new File("uploads");
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs(); // 존재하지 않으면 생성
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
         }
 
-        Path uploadPath = getUploadPath();
         String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
         Path filePath = uploadPath.resolve(fileName);
 
         image.transferTo(filePath.toFile());
 
         return "/uploads/" + fileName;
-    }
-
-    private Path getUploadPath() throws IOException {
-        ClassPathResource resource = new ClassPathResource("static/uploads");
-        Path uploadPath = resource.getFile().toPath();
-
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
-        return uploadPath;
     }
 }
