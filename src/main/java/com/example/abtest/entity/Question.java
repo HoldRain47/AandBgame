@@ -23,4 +23,7 @@ public class Question {
   private  String optionA;
   @Column(nullable = false, length = 200)
   private  String optionB;
+
+  private String imageA;
+  private String imageB;
 }

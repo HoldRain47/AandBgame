@@ -159,6 +159,14 @@
             text-transform: uppercase;
         }
 
+        .option-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
         .option-text {
             font-size: 1.1em;
             color: #333;
@@ -278,6 +286,7 @@
 
                     <div class="options-container">
                         <div class="option-box">
+	                        <img th:if="${question.imageA != null}" th:src="@{${question.imageA}}" alt="Option A Image" class="option-image"/>
                             <div class="option-label">선택지 A</div>
                             <div class="option-text" th:text="${question.optionA}">옵션 A</div>
                         </div>
@@ -285,6 +294,7 @@
                         <div class="vs-text">VS</div>
 
                         <div class="option-box">
+	                        <img th:if="${question.imageB != null}" th:src="@{${question.imageB}}" alt="Option B Image" class="option-image"/>
                             <div class="option-label">선택지 B</div>
                             <div class="option-text" th:text="${question.optionB}">옵션 B</div>
                         </div>
