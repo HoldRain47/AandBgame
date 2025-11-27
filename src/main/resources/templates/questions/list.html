@@ -1,0 +1,134 @@
+<!-- src/main/resources/templates/questions/list.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>A vs B - 질문 목록</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 0 16px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background: #2563eb;
+            color: #fff;
+            border-color: #2563eb;
+        }
+        .btn-outline {
+            background: #fff;
+            color: #2563eb;
+            border-color: #2563eb;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+        }
+        th, td {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 10px 8px;
+            text-align: left;
+        }
+        th {
+            background: #f9fafb;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        tbody tr:hover {
+            background: #f3f4f6;
+        }
+        .title-link {
+            font-weight: 600;
+            color: #111827;
+            text-decoration: none;
+        }
+        .title-link:hover {
+            text-decoration: underline;
+        }
+        .subtitle {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        .empty {
+            text-align: center;
+            padding: 32px 0;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <h1>A vs B 질문 목록</h1>
+        <p class="subtitle">사용자가 만든 A/B 질문에 투표해 보세요.</p>
+    </div>
+    <div>
+        <!-- 필수: 새 질문 생성 폼으로 이동 -->
+        <a th:href="@{/questions/new}" class="btn btn-primary">새 질문 만들기</a>
+        <!-- 추가 기능용 (선택): 랜덤 질문 -->
+        <a th:href="@{/questions/random}" class="btn btn-outline">랜덤 질문</a>
+    </div>
+</header>
+
+<section>
+    <table>
+        <thead>
+        <tr>
+            <th style="width: 60px;">번호</th>
+            <th>질문 제목</th>
+            <th style="width: 22%;">선택지 A</th>
+            <th style="width: 22%;">선택지 B</th>
+            <th style="width: 90px;">자세히</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- 질문이 없을 때 -->
+        <tr th:if="${#lists.isEmpty(questions)}">
+            <td colspan="5" class="empty">
+                아직 등록된 질문이 없습니다. 첫 질문을 만들어 보세요!
+            </td>
+        </tr>
+
+        <!-- 질문 목록 렌더링 -->
+        <tr th:each="question, stat : ${questions}">
+            <td th:text="${stat.count}">1</td>
+            <td>
+                <!-- 질문 상세 조회 링크 (GET /questions/{id}) -->
+                <a th:href="@{/questions/{id}(id=${question.id})}"
+                   th:text="${question.title}"
+                   class="title-link">
+                    질문 제목
+                </a>
+            </td>
+            <td th:text="${question.optionA}">선택지 A</td>
+            <td th:text="${question.optionB}">선택지 B</td>
+            <td>
+                <a th:href="@{/questions/{id}(id=${question.id})}" class="btn">
+                    보기
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+</body>
+</html>

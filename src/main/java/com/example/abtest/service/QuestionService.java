@@ -16,4 +16,13 @@ public class QuestionService {
     return questionRepository.findAll();
   }
 
+  public Question createQuestion(Question question) {
+    return questionRepository.save(question);
+  }
+  public Question getByidQuestion(Long id) {
+    return questionRepository.findById(id).orElseThrow(()-> {
+      throw new RuntimeException("질문을 찾을 수 없음");
+    });
+  }
+
 }
