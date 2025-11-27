@@ -279,14 +279,16 @@
 
             <!-- Questions Grid -->
             <div th:if="${!#lists.isEmpty(questions)}" class="questions-grid">
-                <div th:each="question, stat : ${questions}" class="question-card">
+                <div th:each="question, stat : ${questions}" class="question-card"
+                    th:onclick="'window.location.href=\'/questions/' + ${question.id} + '\''">
                     <span class="question-number" th:text="'#' + ${stat.count}">번호</span>
 
                     <h2 class="question-title" th:text="${question.title}">질문 제목</h2>
 
                     <div class="options-container">
                         <div class="option-box">
-	                        <img th:if="${question.imageA != null}" th:src="@{${question.imageA}}" alt="Option A Image" class="option-image"/>
+                            <img th:if="${question.imageA != null}" th:src="@{${question.imageA}}" alt="Option A Image"
+                                class="option-image" />
                             <div class="option-label">선택지 A</div>
                             <div class="option-text" th:text="${question.optionA}">옵션 A</div>
                         </div>
@@ -294,14 +296,16 @@
                         <div class="vs-text">VS</div>
 
                         <div class="option-box">
-	                        <img th:if="${question.imageB != null}" th:src="@{${question.imageB}}" alt="Option B Image" class="option-image"/>
+                            <img th:if="${question.imageB != null}" th:src="@{${question.imageB}}" alt="Option B Image"
+                                class="option-image" />
                             <div class="option-label">선택지 B</div>
                             <div class="option-text" th:text="${question.optionB}">옵션 B</div>
                         </div>
                     </div>
 
                     <div class="card-footer">
-                        <a th:href="@{/questions/{id}(id=${question.id})}" class="btn-view">
+                        <a th:href="@{/questions/{id}(id=${question.id})}" class="btn-view"
+                            onclick="event.stopPropagation();">
                             투표하러 가기 →
                         </a>
                     </div>

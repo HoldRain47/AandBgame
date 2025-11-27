@@ -1,11 +1,13 @@
 package com.example.abtest.controller;
 
+import com.example.abtest.dto.RandomTextDto;
 import com.example.abtest.entity.Answer;
 import com.example.abtest.entity.Question;
 import com.example.abtest.dto.QuestionForm;
 import com.example.abtest.service.AnswerService;
 import com.example.abtest.service.ImageService;
 import com.example.abtest.service.QuestionService;
+import com.example.abtest.service.RandomSrevice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -24,6 +26,7 @@ public class QuestionController {
     private final QuestionService questionService;
     private final AnswerService answerService;
     private final ImageService imageService;
+    private final RandomSrevice randomSrevice;
     // 질문 목록 조회 (GET /questions)
 
     @GetMapping("")
@@ -104,7 +107,20 @@ public class QuestionController {
         answerService.createAnswer(answer);
         return "redirect:/questions/" + id;
     }
+    // 더미 질문 100개 생성 처리
+    @GetMapping("/new/x100")
+    public String createQuestionX100(@ModelAttribute Question question) {
+      for(int i=0 ; i < 100 ; i++){
+        RandomTextDto rDto = randomSrevice.getRandom();
 
+        Question newQ = new Question();
+        newQ.setTitle(rDto.getTitle());
+        newQ.setOptionA(rDto.getOptionA());
+        newQ.setOptionB(rDto.getOptionB());
+        questionService.createQuestion(newQ);
+      }
+      return "redirect:/questions";
+    }
     //랜덤 질문 보기 (GET /questions/random)
     @GetMapping("/random")
     public String randomQuestions(Model model) {

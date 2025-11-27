@@ -14,11 +14,13 @@ public class RandomSrevice {
 
   public RandomTextDto getRandom() {
     Random random = new Random();
-    int randomNum = random.nextInt(30);
+    int randomNum = random.nextInt(30) + 1; // 1~30 범위로 변경 (0 방지)
     String randomTitle = "Title." + random.nextInt(randomNum);
     String randomOptionA = "OptionA." + random.nextInt(randomNum);
     String randomOptionB = "OptionB." + random.nextInt(randomNum);
-
+    System.out.println(randomTitle);
+    System.out.println(randomOptionA);
+    System.out.println(randomOptionB);
 
     RandomTextDto rTxDto = new RandomTextDto();
     rTxDto.setTitle(messageSource.getMessage(randomTitle, null, "랜덤으로 만든 문제", null));
