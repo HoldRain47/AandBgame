@@ -360,11 +360,11 @@
                     <label>선택하기:</label>
                     <div class="radio-group">
                         <div class="radio-option">
-                            <input type="radio" id="answerText" name="answerText" value="content" required>
+                            <input type="radio" id="choiceA" name="answerText" value="A" required>
                             <label for="choiceA" th:text="${question.optionA}">옵션 A</label>
                         </div>
                         <div class="radio-option">
-                            <input type="radio" id="answerText" name="answerText" value="content" required>
+                            <input type="radio" id="choiceB" name="answerText" value="B" required>
                             <label for="choiceB" th:text="${question.optionB}">옵션 B</label>
                         </div>
                     </div>
@@ -418,7 +418,10 @@
                             선택
                         </span>
                     </div>
-                    <div class="answer-content" th:text="${answer.content}">투표 이유</div>
+                    <div class="answer-content" th:if="${!#strings.isEmpty(answer.content)}"
+                        th:text="${answer.content}">투표 이유</div>
+                    <div class="answer-content" th:if="${#strings.isEmpty(answer.content)}"
+                        style="color: #999; font-style: italic;">선택 이유를 입력하지 않았습니다.</div>
                 </div>
             </div>
         </div>

@@ -71,11 +71,24 @@ public class QuestionController {
   // 답변(투표) 생성 (POST /questions/{id}/answers)
 
   @PostMapping("{id}/answers")
-  public String createAnswer(@PathVariable Long id, @ModelAttribute Answer answer) {
+  public String createAnswer(
+      @PathVariable Long id,
+      @RequestParam("answerText") String answerText,
+      @RequestParam(value = "content", required = false, defaultValue = "") String content) {
 
-    answer.setQuestion(questionService.getByidQuestion(id));
+    Question question = questionService.getByidQuestion(id);
+
+    // 새로운 Answer 객체 생성
+    Answer answer = new Answer();
+    answer.setAnswerText(answerText);
+    answer.setContent(content); // 빈 문자열도 허용
+    answer.setQuestion(question);
+
     answerService.createAnswer(answer);
     return "redirect:/questions/" + id;
   }
-  // A/B 투표 비율 계산 및 표시
+
+
+
+
 }
