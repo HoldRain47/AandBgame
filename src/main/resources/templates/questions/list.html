@@ -249,6 +249,48 @@
                 display: none;
             }
         }
+
+        /* 무한 스크롤 관련 스타일 */
+        .sentinel {
+            height: 1px;
+            margin: 20px 0;
+        }
+
+        .loading-indicator {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.2rem;
+            display: none;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .no-more-data {
+            text-align: center;
+            padding: 30px;
+            color: white;
+            font-size: 1.1rem;
+            display: none;
+        }
     </style>
 </head>
 
@@ -312,7 +354,152 @@
                 </div>
             </div>
         </div>
+
+        <!-- 센티널 요소 (Intersection Observer 타겟) -->
+        <div class="sentinel" id="sentinel"></div>
+
+        <!-- 로딩 인디케이터 -->
+        <div class="loading-indicator" id="loadingIndicator">
+            <div class="spinner"></div>
+            <div>질문을 불러오는 중...</div>
+        </div>
+
+        <!-- 더 이상 데이터 없음 메시지 -->
+        <div class="no-more-data" id="noMoreData">
+            📭 모든 질문을 불러왔습니다!
+        </div>
     </div>
+
+    <script th:inline="javascript">
+        let currentPage = 1; // 초기 페이지는 이미 로드되었으므로 1부터 시작
+        let isLoading = false;
+        let hasMoreData = /*[[${hasNext}]]*/ false;
+
+        const questionsGrid = document.querySelector('.questions-grid');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const noMoreData = document.getElementById('noMoreData');
+        const sentinel = document.getElementById('sentinel');
+
+        /**
+         * 질문 카드 HTML 생성 함수
+         */
+        function createQuestionCard(question, index) {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.onclick = function () {
+                window.location.href = '/questions/' + question.id;
+            };
+
+            let imageAHtml = '';
+            if (question.imageA) {
+                imageAHtml = `<img src="${question.imageA}" alt="Option A Image" class="option-image"/>`;
+            }
+
+            let imageBHtml = '';
+            if (question.imageB) {
+                imageBHtml = `<img src="${question.imageB}" alt="Option B Image" class="option-image"/>`;
+            }
+
+            card.innerHTML = `
+                <span class="question-number">#${index}</span>
+                <h2 class="question-title">${question.title}</h2>
+                <div class="options-container">
+                    <div class="option-box">
+                        ${imageAHtml}
+                        <div class="option-label">선택지 A</div>
+                        <div class="option-text">${question.optionA}</div>
+                    </div>
+                    <div class="vs-text">VS</div>
+                    <div class="option-box">
+                        ${imageBHtml}
+                        <div class="option-label">선택지 B</div>
+                        <div class="option-text">${question.optionB}</div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="/questions/${question.id}" class="btn-view" onclick="event.stopPropagation();">
+                        투표하러 가기 →
+                    </a>
+                </div>
+            `;
+
+            return card;
+        }
+
+        /**
+         * 다음 페이지 질문 로드 함수
+         */
+        async function loadMoreQuestions() {
+            if (isLoading || !hasMoreData) return;
+
+            isLoading = true;
+            loadingIndicator.style.display = 'block';
+
+            try {
+                const response = await fetch(`/api/questions?page=${currentPage}&size=10`);
+
+                if (!response.ok) {
+                    throw new Error('질문을 불러오는데 실패했습니다.');
+                }
+
+                const data = await response.json();
+
+                // 현재 카드 개수 계산 (번호 매기기용)
+                const currentCardCount = questionsGrid.children.length;
+
+                // 질문 카드 추가
+                data.content.forEach((question, idx) => {
+                    const card = createQuestionCard(question, currentCardCount + idx + 1);
+                    questionsGrid.appendChild(card);
+                });
+
+                // 다음 페이지 정보 업데이트
+                hasMoreData = data.hasNext;
+                currentPage++;
+
+                // 더 이상 데이터가 없으면 메시지 표시
+                if (!hasMoreData) {
+                    noMoreData.style.display = 'block';
+                    sentinel.style.display = 'none';
+                }
+
+            } catch (error) {
+                console.error('Error loading questions:', error);
+                alert('질문을 불러오는데 실패했습니다.');
+            } finally {
+                isLoading = false;
+                loadingIndicator.style.display = 'none';
+            }
+        }
+
+        /**
+         * Intersection Observer 설정
+         */
+        if (questionsGrid && hasMoreData) {
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && !isLoading && hasMoreData) {
+                            loadMoreQuestions();
+                        }
+                    });
+                },
+                {
+                    root: null,
+                    rootMargin: '100px',
+                    threshold: 0.1
+                }
+            );
+
+            observer.observe(sentinel);
+        } else if (!hasMoreData) {
+            // 초기 로드 시 더 이상 데이터가 없으면 센티널 숨김
+            sentinel.style.display = 'none';
+        }
+
+        console.log('무한 스크롤 초기화 완료');
+        console.log('Has more data:', hasMoreData);
+    </script>
 </body>
 
 </html>
