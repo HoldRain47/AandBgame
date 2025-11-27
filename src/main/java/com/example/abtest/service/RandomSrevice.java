@@ -14,9 +14,10 @@ public class RandomSrevice {
 
   public RandomTextDto getRandom() {
     Random random = new Random();
-    String randomTitle = "Title." + random.nextInt(10);
-    String randomOptionA = "OptionA." + random.nextInt(10);
-    String randomOptionB = "OptionB." + random.nextInt(10);
+    int randomNum = random.nextInt(30);
+    String randomTitle = "Title." + random.nextInt(randomNum);
+    String randomOptionA = "OptionA." + random.nextInt(randomNum);
+    String randomOptionB = "OptionB." + random.nextInt(randomNum);
 
 
     RandomTextDto rTxDto = new RandomTextDto();
