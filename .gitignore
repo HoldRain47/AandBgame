@@ -37,3 +37,5 @@ out/
 .vscode/
 
 요구사항.txt
+
+uploads/*
