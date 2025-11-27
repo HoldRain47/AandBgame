@@ -92,6 +92,9 @@ public class QuestionController {
   public String randomQuestions(Model model) {
     Random random = new Random();
     int maxNum = questionService.getQuestions().size();
+    if(maxNum == 0) {
+        return "redirect:/questions";
+    }
     Long randomNum = Integer.toUnsignedLong(random.nextInt(maxNum)+1);
     System.out.println(randomNum);
     questionService.getByidQuestion(randomNum);
