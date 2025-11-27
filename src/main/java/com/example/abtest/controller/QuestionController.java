@@ -10,11 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @RequestMapping("/questions")
-@Controller("/")
+@Controller
 @RequiredArgsConstructor
 public class QuestionController {
   private final QuestionService questionService;
@@ -87,7 +87,20 @@ public class QuestionController {
     answerService.createAnswer(answer);
     return "redirect:/questions/" + id;
   }
+  //랜덤 질문 보기 (GET /questions/random)
+  @GetMapping("/random")
+  public String randomQuestions(Model model) {
+    Random random = new Random();
+    int maxNum = questionService.getQuestions().size();
+    Long randomNum = Integer.toUnsignedLong(random.nextInt(maxNum)+1);
+    System.out.println(randomNum);
+    questionService.getByidQuestion(randomNum);
 
+
+    return "redirect:/questions/" + randomNum;
+
+
+  }
 
 
 
